@@ -129,7 +129,7 @@ class NetworkGenerator:
         """
         edge_table = None
         tries = 0
-        while edge_table is None and tries <1:
+        while edge_table is None and tries <10:
             edge_table, community_table, seed = self.generate_lfr_net(
                 N=N, k=k, maxk=maxk, minc=minc, maxc=maxc, tau=tau, tau2=tau2, mu=mu
             )
