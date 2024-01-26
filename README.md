@@ -23,6 +23,15 @@ The LFR benchmark model for networks. This repository contains a Python wrapper 
 
 To install the LFR-benchmark, follow these steps:
 
+Setting up virtual environment might be required unless you have `numpy` version 1.23.5 and a python version compatible with that (e.g. Python version 3.9)
+
+```bash
+conda create -n lfr_venv python=3.9
+conda activate lfr_venv
+conda install -c conda-forge mamba -y
+mamba install -c conda-forge graph-tool scikit-learn numpy==1.23.5 numba scipy pandas networkx seaborn matplotlib gensim ipykernel tqdm black -y
+```
+
 ```bash
 git clone https://github.com/skojaku/LFR-benchmark
 cd LFR-benchmark
