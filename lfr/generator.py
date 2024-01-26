@@ -66,10 +66,16 @@ class NetworkGenerator:
             os.system(
                 f"cd {tmpdirname} && {root}/benchmark -N {N} -k {k} -maxk {maxk} -t1 {t1} -t2 {t2} -mu {mu} -minc {minc} -maxc {maxc} > /dev/null 2>&1"
             )
-
-            edges = pd.read_csv(
-                f"{tmpdirname}/network.dat", sep="\t", header=None
-            ).values
+        
+            try:
+                # Attempt to read the file
+                edges = pd.read_csv(f"{tmpdirname}/network.dat", sep="\t", header=None).values
+            except FileNotFoundError:
+                # Handle the FileNotFoundError here
+                #print("File not found. Make sure it is generated properly.")
+                return None, None, None
+            
+        
             edges = edges - 1  # because the node id start from 1
             edges = pd.DataFrame(edges, columns=["source", "target"])
 
@@ -121,10 +127,17 @@ class NetworkGenerator:
         dict
             A dictionary containing the generated network, community table, and seed for the random number generator used in the generation process.
         """
-        edge_table, community_table, seed = self.generate_lfr_net(
-            N=N, k=k, maxk=maxk, minc=minc, maxc=maxc, tau=tau, tau2=tau2, mu=mu
-        )
-
+        edge_table = None
+        tries = 0
+        while edge_table is None and tries <1:
+            edge_table, community_table, seed = self.generate_lfr_net(
+                N=N, k=k, maxk=maxk, minc=minc, maxc=maxc, tau=tau, tau2=tau2, mu=mu
+            )
+            tries+=1
+        if edge_table is None:
+            print("Failed to generate network")
+            return None
+        
         N = community_table.shape[0]
         A = sparse.csr_matrix(
             (
